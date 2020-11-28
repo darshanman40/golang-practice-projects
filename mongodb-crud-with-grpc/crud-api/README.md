@@ -6,5 +6,4 @@ API helps to execute Create/Read/Update/Delete operations on Mongo DB
 
 - [gRPC](https://grpc.io/)
 - [protobuf](https://developers.google.com/protocol-buffers)
-- [mongodb community server](https://www.mongodb.com/try/download/community)
-- [cobra cli](https://github.com/spf13/cobra)
+- [mongodb client](https://github.com/mongodb/mongo-go-driver)
