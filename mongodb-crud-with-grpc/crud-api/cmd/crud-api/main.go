@@ -9,64 +9,63 @@ import (
 	"os/signal"
 
 	"github.com/darshanman40/golang-practice-projects/mongodb-crud-with-grpc/crud-api/api/services"
+	"github.com/darshanman40/golang-practice-projects/mongodb-crud-with-grpc/crud-api/configs"
 	blogpb "github.com/darshanman40/golang-practice-projects/mongodb-crud-with-grpc/crud-api/internal/proto"
+
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"google.golang.org/grpc"
 )
 
-const port = ":50051"
-
+// Func main should be as small as possible and do as little as possible by convention
 func main() {
 
-	// Configure 'log' package to give file name and line number on eg. log.Fatal
-	// just the filename & line number:
-	// log.SetFlags(log.Lshortfile)
-	// Or add timestamps and pipe file name and line number to it:
-	log.SetFlags(log.LstdFlags | log.Lshortfile)
-
-	fmt.Println("Starting server on port :50051...")
-
-	// 50051 is the default port for gRPC
-	// Ideally we'd use 0.0.0.0 instead of localhost as well
-	listener, err := net.Listen("tcp", ":50051")
-
+	// Generate our config based on the config supplied
+	// by the user in the flags
+	cfgPath, err := configs.ParseFlags()
 	if err != nil {
-		log.Fatalf("Unable to listen on port :50051: %v", err)
+		log.Fatal(err)
+	}
+	cfg, err := configs.NewConfig(cfgPath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	serverPortString := cfg.GetServerPortString()
+	mongodbURL := cfg.GetMongoDBURLString()
+
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
+	log.Println("Starting server on port ", serverPortString)
+
+	listener, err := net.Listen(cfg.Server.Network, serverPortString)
+	if err != nil {
+		log.Fatal("Unable to listen on port ", serverPortString, err)
 	}
 
-	// slice of gRPC options
-	// Here we can configure things like TLS
-	opts := []grpc.ServerOption{}
-	// var s *grpc.Server
-	s := grpc.NewServer(opts...)
+	crudServer := services.CrudServer{}
+	crudServer.InitServer(listener)
 
 	// Initialize MongoDb client
 	fmt.Println("Connecting to MongoDB...")
 	mongoCtx := context.Background()
-	db, err := mongo.Connect(mongoCtx, options.Client().ApplyURI("mongodb://localhost:27017"))
+	db, err := mongo.Connect(mongoCtx, options.Client().ApplyURI(mongodbURL))
 	if err != nil {
 		log.Fatal(err)
 	}
 	err = db.Ping(mongoCtx, nil)
 	if err != nil {
+
 		log.Fatalf("Could not connect to MongoDB: %v\n", err)
 	} else {
-		fmt.Println("Connected to Mongodb")
+		fmt.Println("Connected to Mongodb ")
 	}
 
-	blogdb := db.Database("mydb").Collection("blog")
-	// var srv *BlogServiceServer
 	srv := &services.BlogServiceServer{}
-	srv.Init(db, blogdb)
-	blogpb.RegisterBlogServiceServer(s, srv)
-	// Start the server in a child routine
+	srv.Init(db, "blog")
+	blogpb.RegisterBlogServiceServer(crudServer.GetGRPCServer(), srv)
+
 	go func() {
-		if err := s.Serve(listener); err != nil {
-			log.Fatalf("Failed to serve: %v", err)
-		}
+		crudServer.StartServer()
 	}()
-	fmt.Println("Server succesfully started on port :50051")
+	fmt.Println("Server succesfully started on port", serverPortString)
 
 	// Create a channel to receive OS signals
 	c := make(chan os.Signal)
@@ -81,10 +80,8 @@ func main() {
 	// If the main routine were to shutdown so would the child routine that is Serving the server
 	<-c
 
-	// After receiving CTRL+C Properly stop the server
 	fmt.Println("\nStopping the server...")
-	s.Stop()
-	listener.Close()
+	crudServer.StopServer()
 	fmt.Println("Closing MongoDB connection")
 	db.Disconnect(mongoCtx)
 	fmt.Println("Done.")

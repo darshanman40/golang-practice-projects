@@ -1,0 +1,16 @@
+server:
+  network: tcp
+  host: 127.0.0.1
+  port: 50051
+  timeout:
+    server: 30
+    read: 15
+    write: 10
+    idle: 5
+mongodb: 
+  network: mongodb
+  host: 127.0.0.1
+  port: 27017
+
+
+

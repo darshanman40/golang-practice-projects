@@ -2,7 +2,6 @@ package services
 
 import (
 	"context"
-	"fmt"
 	"strings"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -19,7 +18,6 @@ import (
 type BlogServiceServer struct {
 	db     *mongo.Client
 	blogdb *mongo.Collection
-	// mongoCtx context.Context
 }
 
 var errorDetailBuilder strings.Builder
@@ -33,9 +31,9 @@ type BlogItem struct {
 }
 
 //Init ...
-func (s *BlogServiceServer) Init(db *mongo.Client, blogdb *mongo.Collection) {
-	s.blogdb = blogdb
+func (s *BlogServiceServer) Init(db *mongo.Client, collectionName string) {
 	s.db = db
+	s.blogdb = db.Database("mydb").Collection(collectionName)
 }
 
 //ReadBlog read blog article
@@ -44,7 +42,6 @@ func (s *BlogServiceServer) ReadBlog(ctx context.Context, req *blogpb.ReadBlogRe
 	defer errorDetailBuilder.Reset()
 	oid, err := primitive.ObjectIDFromHex(req.GetId())
 	if err != nil {
-		// errorDetailBuilder.WriteString(err.Error())
 		return nil, status.Errorf(codes.InvalidArgument, err.Error())
 	}
 
@@ -73,11 +70,10 @@ func (s *BlogServiceServer) CreateBlog(ctx context.Context, req *blogpb.CreateBl
 		Content:  blog.GetContent(),
 	}
 
-	result, err := s.blogdb.InsertOne(ctx, data) //(s.mongoCtx, data)
+	result, err := s.blogdb.InsertOne(ctx, data)
 	if err != nil {
 		errorDetailBuilder.WriteString("Internal Error: ")
 		errorDetailBuilder.WriteString(err.Error())
-		fmt.Println(codes.Internal, errorDetailBuilder.String())
 		return nil, status.Errorf(codes.Internal, errorDetailBuilder.String())
 	}
 	oid := result.InsertedID.(primitive.ObjectID)
@@ -105,7 +101,8 @@ func (s *BlogServiceServer) UpdateBlog(ctx context.Context, req *blogpb.UpdateBl
 	}
 
 	filter := bson.M{"_id": oid}
-	result := s.blogdb.FindOneAndUpdate(ctx, filter, bson.M{"$set": update}, options.FindOneAndUpdate().SetReturnDocument(1))
+	result := s.blogdb.FindOneAndUpdate(ctx, filter, bson.M{"$set": update},
+		options.FindOneAndUpdate().SetReturnDocument(1))
 
 	decoded := BlogItem{}
 	if err := result.Decode(&decoded); err != nil {
@@ -123,7 +120,7 @@ func (s *BlogServiceServer) UpdateBlog(ctx context.Context, req *blogpb.UpdateBl
 	}, nil
 }
 
-//DeleteBlog ...
+//DeleteBlog Delete the blog by ID
 func (s *BlogServiceServer) DeleteBlog(ctx context.Context, req *blogpb.DeleteBlogReq) (*blogpb.DeleteBlogRes, error) {
 
 	defer errorDetailBuilder.Reset()

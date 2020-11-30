@@ -28,3 +28,15 @@ func (c *CrudServer) StartServer() {
 	}
 
 }
+
+//StopServer ...
+func (c *CrudServer) StopServer() {
+	c.server.Stop()
+	c.listener.Close()
+
+}
+
+//GetGRPCServer ...
+func (c *CrudServer) GetGRPCServer() *grpc.Server {
+	return c.server
+}

@@ -28,6 +28,14 @@
   version = "v1.35.35"
 
 [[projects]]
+  digest = "1:80057945464ffb5b0da1f026beb8df0e8dbd098eaf771a349291bed2cd29a83e"
+  name = "github.com/fsnotify/fsnotify"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "45d7d09e39ef4ac08d493309fa031790c15bfe8a"
+  version = "v1.4.9"
+
+[[projects]]
   digest = "1:586ea76dbd0374d6fb649a91d70d652b7fe0ccffb8910a77468e7702e7901f3d"
   name = "github.com/go-stack/stack"
   packages = ["."]
@@ -58,6 +66,25 @@
   version = "v0.0.2"
 
 [[projects]]
+  digest = "1:c0d19ab64b32ce9fe5cf4ddceba78d5bc9807f0016db6b1183599da3dcc24d10"
+  name = "github.com/hashicorp/hcl"
+  packages = [
+    ".",
+    "hcl/ast",
+    "hcl/parser",
+    "hcl/printer",
+    "hcl/scanner",
+    "hcl/strconv",
+    "hcl/token",
+    "json/parser",
+    "json/scanner",
+    "json/token",
+  ]
+  pruneopts = "UT"
+  revision = "8cb6e5b959231cc1119e43259c4a608f9c51a241"
+  version = "v1.0.0"
+
+[[projects]]
   digest = "1:bb81097a5b62634f3e9fec1014657855610c82d19b9a40c17612e32651e35dca"
   name = "github.com/jmespath/go-jmespath"
   packages = ["."]
@@ -79,12 +106,87 @@
   version = "v1.11.3"
 
 [[projects]]
+  digest = "1:85a45ff41e6b733d430b653236191d131b707a05e9751f53b469f2c0bb222f01"
+  name = "github.com/magiconair/properties"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "0e5c09062c2daef666bd279e2d2d9f25f218f2be"
+  version = "v1.8.4"
+
+[[projects]]
+  digest = "1:4bba0efb9a537243bc62a0f816d75a068ea45816824e36706e20fb507b986a9c"
+  name = "github.com/mitchellh/mapstructure"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "95075d6e1a88d608e5258a054d7f0de9401f255e"
+  version = "v1.4.0"
+
+[[projects]]
+  digest = "1:ba7c8395a3bdd3b44d40ba36ff6eb283b583a3db865c02a952b89a1aa639081b"
+  name = "github.com/pelletier/go-toml"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "65ca8064882c8c308e5c804c5d5443d409e0738c"
+  version = "v1.8.1"
+
+[[projects]]
   digest = "1:9e1d37b58d17113ec3cb5608ac0382313c5b59470b94ed97d0976e69c7022314"
   name = "github.com/pkg/errors"
   packages = ["."]
   pruneopts = "UT"
   revision = "614d223910a179a466c1767a985424175c39b465"
   version = "v0.9.1"
+
+[[projects]]
+  digest = "1:5bc51628f10ee2e983badf7e302531fd87db15badfb675389450b8765cb3149f"
+  name = "github.com/spf13/afero"
+  packages = [
+    ".",
+    "mem",
+  ]
+  pruneopts = "UT"
+  revision = "efa411e911857ed4705ed931b474891a88f71a73"
+  version = "v1.4.1"
+
+[[projects]]
+  digest = "1:ff4cd55a3666b6ea3a876c9e133bfb54d6c812e725409a773f2c94a0b3a92f4f"
+  name = "github.com/spf13/cast"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "1ffadf551085444af981432dd0f6d1160c11ec64"
+  version = "v1.3.1"
+
+[[projects]]
+  digest = "1:1b753ec16506f5864d26a28b43703c58831255059644351bbcb019b843950900"
+  name = "github.com/spf13/jwalterweatherman"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "94f6ae3ed3bceceafa716478c5fbf8d29ca601a1"
+  version = "v1.1.0"
+
+[[projects]]
+  digest = "1:524b71991fc7d9246cc7dc2d9e0886ccb97648091c63e30eef619e6862c955dd"
+  name = "github.com/spf13/pflag"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "2e9d26c8c37aae03e3f9d4e90b7116f5accb7cab"
+  version = "v1.0.5"
+
+[[projects]]
+  digest = "1:b3027d4cb73b6576e8818c1012389dbcd8385e34bb8e4ee024891214c4338725"
+  name = "github.com/spf13/viper"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "3826be313591f83193f048520482a7b3cf17d506"
+  version = "v1.7.1"
+
+[[projects]]
+  digest = "1:f4b32291cad5efac2bfdba89ccde6aa04618b62ce06c1a571da2dc4f3f2677fb"
+  name = "github.com/subosito/gotenv"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "2ef7124db659d49edac6aa459693a15ae36c671a"
+  version = "v1.2.0"
 
 [[projects]]
   branch = "master"
@@ -311,10 +413,27 @@
   revision = "3f7a61f89bb6813f89d981d1870ed68da0b3c3f1"
   version = "v1.25.0"
 
+[[projects]]
+  digest = "1:f7059e57af5fc848220ebfbfb61e4d333179a6a07e70bc01f7ae5bc873586537"
+  name = "gopkg.in/ini.v1"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "5e97220809ffaa826f787728501264e9114cb834"
+  version = "v1.62.0"
+
+[[projects]]
+  digest = "1:5054a1f394226de9e6ddc47b0ba77e35092a4112f4a1cd9cb94aba1f5bdc3ec6"
+  name = "gopkg.in/yaml.v2"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "7649d4548cb53a614db133b2a8ac1f31859dda8c"
+  version = "v2.4.0"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/spf13/viper",
     "go.mongodb.org/mongo-driver/bson",
     "go.mongodb.org/mongo-driver/bson/primitive",
     "go.mongodb.org/mongo-driver/mongo",
