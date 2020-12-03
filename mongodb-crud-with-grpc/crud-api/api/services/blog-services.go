@@ -39,7 +39,7 @@ func (s *BlogServiceServer) Init(db *mongo.Client, collectionName string) {
 //ReadBlog read blog article
 func (s *BlogServiceServer) ReadBlog(ctx context.Context, req *blogpb.ReadBlogReq) (*blogpb.ReadBlogRes, error) {
 
-	defer errorDetailBuilder.Reset()
+	errorDetailBuilder.Reset()
 	oid, err := primitive.ObjectIDFromHex(req.GetId())
 	if err != nil {
 		return nil, status.Errorf(codes.InvalidArgument, err.Error())
@@ -63,7 +63,13 @@ func (s *BlogServiceServer) ReadBlog(ctx context.Context, req *blogpb.ReadBlogRe
 //CreateBlog create new article
 func (s *BlogServiceServer) CreateBlog(ctx context.Context, req *blogpb.CreateBlogReq) (*blogpb.CreateBlogRes, error) {
 	blog := req.GetBlog()
-	defer errorDetailBuilder.Reset()
+	errorDetailBuilder.Reset()
+
+	if blog == nil {
+		errorDetailBuilder.WriteString("Found Empty Blog ")
+		return nil, status.Errorf(codes.InvalidArgument, errorDetailBuilder.String())
+	}
+
 	data := BlogItem{
 		AuthorID: blog.GetAuthorId(),
 		Title:    blog.GetTitle(),
@@ -85,7 +91,7 @@ func (s *BlogServiceServer) CreateBlog(ctx context.Context, req *blogpb.CreateBl
 //UpdateBlog update existing article
 func (s *BlogServiceServer) UpdateBlog(ctx context.Context, req *blogpb.UpdateBlogReq) (*blogpb.UpdateBlogRes, error) {
 	blog := req.GetBlog()
-	defer errorDetailBuilder.Reset()
+	errorDetailBuilder.Reset()
 
 	oid, err := primitive.ObjectIDFromHex(blog.GetId())
 	if err != nil {
@@ -123,7 +129,7 @@ func (s *BlogServiceServer) UpdateBlog(ctx context.Context, req *blogpb.UpdateBl
 //DeleteBlog Delete the blog by ID
 func (s *BlogServiceServer) DeleteBlog(ctx context.Context, req *blogpb.DeleteBlogReq) (*blogpb.DeleteBlogRes, error) {
 
-	defer errorDetailBuilder.Reset()
+	errorDetailBuilder.Reset()
 
 	oid, err := primitive.ObjectIDFromHex(req.GetId())
 	if err != nil {
@@ -148,7 +154,7 @@ func (s *BlogServiceServer) DeleteBlog(ctx context.Context, req *blogpb.DeleteBl
 func (s *BlogServiceServer) ListBlogs(req *blogpb.ListBlogsReq, stream blogpb.BlogService_ListBlogsServer) error {
 
 	data := &BlogItem{}
-	defer errorDetailBuilder.Reset()
+	errorDetailBuilder.Reset()
 	cursor, err := s.blogdb.Find(context.Background(), bson.M{})
 	if err != nil {
 		errorDetailBuilder.WriteString("Unknown Internal error: ")
